@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Naseeb Quizy</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #000;
+      color: #0ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 80%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff;
+    }
+    #question {
+      font-size: 1.5em;
+    }
+    button.option {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 1.2em;
+      background: #111;
+      border: 1px solid #0ff;
+      color: #0ff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button.option:hover {
+      background-color: #0ff;
+      color: #000;
+    }
+    #timeline-bar {
+      width: 100%;
+      height: 10px;
+      background: #333;
+      margin-top: 20px;
+    }
+    #timeline-fill {
+      height: 100%;
+      width: 0%;
+      background: #0ff;
+      transition: width 1s linear;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Naseeb Quizy</h1>
+    <div id="question-container">
+      <p id="question">Loading...</p>
+      <div id="options"></div>
+    </div>
+    <div id="timeline-bar"><div id="timeline-fill"></div></div>
+    <div id="result" style="display: none;"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "What is the capital of Pakistan?",
+        options: ["Lahore", "Karachi", "Islamabad", "Peshawar"],
+        correct: 2
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Earth", "Venus", "Mars", "Jupiter"],
+        correct: 2
+      },
+      {
+        question: "What is 5 + 3?",
+        options: ["6", "7", "8", "9"],
+        correct: 2
+      }
+    ];
+
+    let currentQuestion = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let startTime;
+
+    function startQuiz() {
+      startTime = new Date();
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if (currentQuestion >= questions.length) {
+        showResult();
+        return;
+      }
+
+      const q = questions[currentQuestion];
+      document.getElementById("question").textContent = q.question;
+
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement("button");
+        btn.textContent = `${index + 1}. ${opt}`;
+        btn.className = "option";
+        btn.onclick = () => checkAnswer(index);
+        optionsDiv.appendChild(btn);
+      });
+
+      animateTimeline();
+    }
+
+    function checkAnswer(selected) {
+      const q = questions[currentQuestion];
+      if (selected === q.correct) {
+        correctCount++;
+      } else {
+        wrongCount++;
+      }
+
+      currentQuestion++;
+      showQuestion();
+    }
+
+    function showResult() {
+      const endTime = new Date();
+      const timeTaken = Math.round((endTime - startTime) / 1000);
+      document.getElementById("question-container").style.display = "none";
+      document.getElementById("timeline-bar").style.display = "none";
+
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").innerHTML = `
+        <h2>Quiz Completed!</h2>
+        <p>Correct Answers: ${correctCount}</p>
+        <p>Wrong Answers: ${wrongCount}</p>
+        <p>Time Taken: ${timeTaken} seconds</p>
+      `;
+    }
+
+    function animateTimeline() {
+      const fill = document.getElementById("timeline-fill");
+      fill.style.width = "0%";
+      setTimeout(() => fill.style.width = "100%", 100);
+    }
+
+    startQuiz();
+  </script>
+</body>
+                             </html>
